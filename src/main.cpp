@@ -1,10 +1,15 @@
-#include <Arduino.h>
+#include "perifericos.h"
+#include "red.h"
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
+  #ifdef DEBUG
+    Serial.begin(921600);
+  #endif
+  
+  inicializaPerifericos();
+  conectaWiFi();
 }
 
 void loop() {
   delay(2000);
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
