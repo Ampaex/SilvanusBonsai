@@ -1,33 +1,41 @@
 #include "red.h"
 
-void conectaWiFi()
-{
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(SSID, CONTRASENA);
+IPAddress ip(192, 168, 3, 1);
+IPAddress gateway(192, 168, 3, 1);
+IPAddress subnet(255, 255, 255, 0);
 
-    WiFi.setAutoReconnect(true);
+DNSServer dnsServer;
+
+void creaPuntoWifi()
+{
+    WiFi.mode(WIFI_AP);
+
     #ifdef DEBUG
-        Serial.println("[WiFi]Conectando al punto de acceso " + (String)SSID);  
+    Serial.println("[WiFi]Estableciendo el punto de acceso " + (String)SSID); 
     #endif
 
+    //Establecer i p estática
+    if(USAR_IP_ESTATICA)
+    {
+        #ifdef DEBUG
+            Serial.println("USANDO IP ESTÁTICA");
+        #endif
+        WiFi.softAPConfig(ip, gateway, subnet);
+    }
+
+    WiFi.softAP(SSID, CONTRASENA);
+
+    #ifdef DEBUG
+        Serial.println("Punto de acceso establecido");
+        Serial.println("SSID: " + (String)SSID);
+        Serial.print("IP:");
+        Serial.println(WiFi.softAPIP());
+    #endif
+    
+    dnsServer.start(DNS_PORT, "silvanus", WiFi.softAPIP());
 
 }
 
-bool compruebaConexion()
-{   
-    if(WiFi.isConnected()){
-        #ifdef DEBUG
-            Serial.println("[COMPROBACIÓN WiFi / MODO ESTACIÓN] Se encuentra conectado al punto de acceso "  + (String)SSID);
-            Serial.println("IP:" + WiFi.localIP().toString());
-        #endif
-        return 1;
-    }
-    else
-    {
-        #ifdef DEBUG
-            Serial.println("[COMPROBACIÓN WiFi]No se encuentra conectado al punto de acceso");
-            Serial.println("IP:" + WiFi.localIP().toString());
-        #endif
-        return 0;
-    }
+void atiendeDNS(){
+    dnsServer.processNextRequest();
 }

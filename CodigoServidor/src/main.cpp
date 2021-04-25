@@ -1,15 +1,23 @@
-#include "perifericos.h"
 #include "red.h"
+#include "servidor.h"
+#include "pantalla.h"
 
 void setup() {
   #ifdef DEBUG
     Serial.begin(921600);
   #endif
-  
-  inicializaPerifericos();
-  conectaWiFi();
+  //creaPuntoWifi();
+  //inicializaServidorHttp();
+
+  //Imagen de introducción
+  inicializaPantalla();
+  escenaIntro();
+  delay(3000);
+  limpiaPantalla();
 }
 
 void loop() {
-  delay(2000);
+  //atiendeServidorHttp();
+  //atiendeDNS();
+  
 }

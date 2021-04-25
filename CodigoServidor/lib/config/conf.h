@@ -6,28 +6,12 @@
     //Modo depuración, activa o desactiva la salida del puerto serie
     #define DEBUG
 
-
     //////////////////////CONFIGURACIÓN WIFI//////////////////////////
-    //Credenciales del punto de acceso
-    #define SSID "Jazz54w"
-    #define CONTRASENA "A34r87puIZ"
+    //Credenciales de establecimiento del punto de acceso
+    #define SSID "SilvanusOrigen"
+    #define CONTRASENA "puntoDeAcceso"
 
-
-    //////////////////////CONFIGURACIÓN RELÉ//////////////////////////
-    #define PIN_RELE D1
-
-
-    //////////////////////CONFIGURACIÓN HT//////////////////////////
-    #include <Wire.h>
-    #include "AHT10.h"
-    #define PIN_SCL_HT D2
-    #define PIN_SDA_HT D3
-
-
-    //////////////////////CONFIGURACIÓN SUSTRATO//////////////////////////
-
-
-    //////////////////////CONFIGURACIÓN LUMINOSIDAD//////////////////////////
-    
+    #define USAR_IP_ESTATICA true //Configuración de ip en red.cpp
+    #define DNS_PORT 53
 
 #endif
