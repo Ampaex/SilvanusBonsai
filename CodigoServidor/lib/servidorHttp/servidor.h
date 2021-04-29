@@ -8,3 +8,4 @@ void atiendeServidorHttp();
 
 void receptorRaiz();
 void receptorNoEncontrado();
+void receptorConfiguracion();

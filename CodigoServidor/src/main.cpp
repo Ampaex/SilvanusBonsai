@@ -6,8 +6,8 @@ void setup() {
   #ifdef DEBUG
     Serial.begin(921600);
   #endif
-  //creaPuntoWifi();
-  //inicializaServidorHttp();
+  creaPuntoWifi();
+  inicializaServidorHttp();
 
   //Imagen de introducción
   inicializaPantalla();
@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-  //atiendeServidorHttp();
-  //atiendeDNS();
-  
+  atiendeServidorHttp();
+  atiendeDNS();
+  delay(200);
 }

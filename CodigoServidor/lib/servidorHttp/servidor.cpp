@@ -1,5 +1,6 @@
 #include "servidor.h"
 #include "paginaPrincipal.h"
+#include <ArduinoJson.h>
 
 ESP8266WebServer server(80);
 
@@ -11,6 +12,9 @@ void inicializaServidorHttp()
     // Receptor para URL desconocida
     server.onNotFound(receptorNoEncontrado);
 
+    // Receptor para un nodo que busca una configuración
+    server.on("/configuracion",receptorConfiguracion);
+
     // Iniciar servidor
     server.begin();
 
@@ -21,6 +25,19 @@ void inicializaServidorHttp()
 
 void atiendeServidorHttp(){
       server.handleClient();
+}
+
+void receptorConfiguracion()
+{
+    if(server.hasArg("idNodo") && server.arg("idNodo") == "nuevo"){
+        String ret;
+        StaticJsonDocument<300> configuracion;
+        configuracion["idNodo"] = "nodo" + (String)rand();
+        
+        serializeJson(configuracion, ret);
+        server.send(200, "text/plain", ret);
+    }
+
 }
 
 void receptorRaiz()
