@@ -6,7 +6,7 @@ void inicializaPerifericos();
 //RELÉ
 
 void activaRele();          
-void desactivaRele();       
+void desactivaRele();
 
 
 //SENSORHT
@@ -15,6 +15,10 @@ void htBegin();
 float temperaturaHT();
 float humedadHT();
 
+//MULTIPLEXOR
+//Selecciona el dispositivo analógico a leer
+void inicializaMultiplexor();
+void seleccionaEntrada(int entrada);
 
 //SUSTRATO
 

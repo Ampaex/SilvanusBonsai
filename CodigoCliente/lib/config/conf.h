@@ -9,8 +9,10 @@
 
     //////////////////////CONFIGURACIÓN WIFI//////////////////////////
     //Credenciales del punto de acceso
-    #define SSID "Jazz54w"
-    #define CONTRASENA "A34r87puIZ"
+    #define SSID "SilvanusOrigen"
+    #define CONTRASENA "puntoDeAcceso"
+
+    #define URL_SERVIDOR "http://silvanus"
 
 
     //////////////////////CONFIGURACIÓN RELÉ//////////////////////////
@@ -24,10 +26,15 @@
     #define PIN_SDA_HT D3
 
 
-    //////////////////////CONFIGURACIÓN SUSTRATO//////////////////////////
+    //////////////////////CONFIGURACIÓN MULTIPLEXOR//////////////////////////
+    //Posiciones del multiplexor en las que se encuentra cada sensor
+    #define SUST 0
+    #define LUM 1
+    #define BAT 2
+    //Pines del multiplexor
+    #define PIN_MUX0 D7
+    #define PIN_MUX1 D6
 
-
-    //////////////////////CONFIGURACIÓN LUMINOSIDAD//////////////////////////
     
 
 #endif

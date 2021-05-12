@@ -1,4 +1,4 @@
-#include "config.h"
+#include "conf.h"
 #include <ESP8266WebServer.h>
 
 void inicializaServidorHttp();
@@ -8,4 +8,6 @@ void atiendeServidorHttp();
 
 void receptorRaiz();
 void receptorNoEncontrado();
-void receptorConfiguracion();
+void receptorRegistro();
+void receptorObtenerConfiguracion();
+void receptorSensor();

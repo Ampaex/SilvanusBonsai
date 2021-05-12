@@ -1,5 +1,10 @@
 #include "conf.h" //Configuración general
-#include <ESP8266WiFi.h>
+#include "perifericos.h"
+
 
 void conectaWiFi();
 bool compruebaConexion();
+
+/////// CLIENTE HTTP ////////
+void enviaSensores();
+void obtenerConfiguracion();

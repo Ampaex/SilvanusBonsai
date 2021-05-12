@@ -14,4 +14,7 @@
     #define USAR_IP_ESTATICA true //Configuración de ip en red.cpp
     #define DNS_PORT 53
 
+    //Establece el número máximo de datos de nodos que debe almacenar
+    #define MAX_DATOS_NODOS 10
+
 #endif

@@ -1,11 +1,12 @@
 #include "perifericos.h"
 
 AHT10 sensorHT(AHT10_ADDRESS_0X38, AHT10_SENSOR);
+int entradaAnalogica = 3;
 
 //Llamada a la inicialización de todos los periféricos
 void inicializaPerifericos(){
     pinMode(PIN_RELE, OUTPUT);
-    pinMode(A0, INPUT);
+    inicializaMultiplexor();
     htBegin();
 
 }
@@ -64,14 +65,51 @@ float humedadHT()
 }
 
 
+////////////////////// MULTIPLEXOR //////////////////////////
+
+void inicializaMultiplexor()
+{
+    pinMode(PIN_MUX0,OUTPUT);
+    pinMode(PIN_MUX1, OUTPUT);
+    pinMode(A0, INPUT);
+}
+void seleccionaEntrada(int entrada)
+{
+    switch (entrada)
+    {
+        case 0:
+            digitalWrite(PIN_MUX0, 0);
+            digitalWrite(PIN_MUX1, 0);
+            break;
+        case 1:
+            digitalWrite(PIN_MUX0, 1);
+            digitalWrite(PIN_MUX1, 0);
+            break;
+        case 2:
+            digitalWrite(PIN_MUX0, 0);
+            digitalWrite(PIN_MUX1, 1);
+            break;
+        case 3:
+            digitalWrite(PIN_MUX0, 1);
+            digitalWrite(PIN_MUX1, 1);
+            break;
+        
+        default:
+            break;
+    }
+}
+
+
 ////////////////////// SUSTRATO //////////////////////////
 
 float humedadSUST()
 {
+    seleccionaEntrada(SUST);
+    delay(50);
     float ret = analogRead(A0);
 
     //Rango 725 - 1024
-    ret = (-(ret - 1024) / 299) * 100;
+    //ret = (-(ret - 1024) / 299) * 100;
 
     #ifdef DEBUG
         Serial.println("Lectura de humedad SUST: " + (String)ret + "%");
@@ -81,14 +119,16 @@ float humedadSUST()
 }
 
 
-////////////////////// LUMINOISIDAD //////////////////////////
+////////////////////// LUMINOSIDAD //////////////////////////
 
 float luminosidad()
 {
+    seleccionaEntrada(LUM);
+    delay(50);
     float ret = analogRead(A0);
 
     //Rango 0 - 1024
-    ret = (ret / 1024) * 100;
+    //ret = (ret / 1024) * 100;
 
     #ifdef DEBUG
         Serial.println("Lectura de luminosidad: " + (String)ret + "%");
