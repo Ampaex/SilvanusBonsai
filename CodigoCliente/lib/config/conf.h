@@ -11,6 +11,7 @@
     //Credenciales del punto de acceso
     #define SSID "SilvanusOrigen"
     #define CONTRASENA "puntoDeAcceso"
+    #define CONEXION_OBLIGATORIA true       //Indica si es obligatorio que tenga que haber establecido una conexión
 
     #define URL_SERVIDOR "http://silvanus"
 

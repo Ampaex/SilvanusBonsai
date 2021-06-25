@@ -1,6 +1,5 @@
 #include "conf.h" //Configuración general
 
-
 void inicializaPerifericos();
 
 //RELÉ

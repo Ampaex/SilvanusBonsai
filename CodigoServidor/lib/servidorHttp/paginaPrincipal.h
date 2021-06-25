@@ -1,6 +1,9 @@
 #include <Arduino.h>
-//@param idNodoRegistrado ID del nodo que se encuentra ahora mismo almacenado en el registro
-String paginaPrincipal(String idNodoRegistrado)
+#include <ArduinoJson.h>
+//@param idNodoRegistrado ID del nodo que se encuentra ahora mismo almacenado en el registro.
+//@param listaNodos La lista de los nodos disponibles con información para ver.
+//@param nNodos Número de nodos en listaNodos
+String paginaPrincipal(String idNodoRegistrado, DynamicJsonDocument &listaNodos)
 {
   String cadenaTotal;
   String pag1 = R"foo(
@@ -208,14 +211,28 @@ String paginaPrincipal(String idNodoRegistrado)
       <!-- Encargado de mostrar todos los nodos que se encuentran enlazados en este momento -->
       <div class="desplegable" id="selector">
         <h2 onclick="enfoca('escnodo')">DATOS DEL NODO</h2>
-        <!-- Ayuda sobre como conectar el formulario con el esp: https://www.luisllamas.es/como-recibir-datos-de-un-formulario-web-con-esp8266/ -->
         <form action="selnodo" method="POST" onclick="enfoca('escnodo')">
           <br><label>Nodos disponibles:</label>
           <select name="nodoelegido" id="escnodo">
-            <option value="nodo1">Nodo-1</option>
-            <option value="nodo2">Nodo-2</option>
-            <option value="nodo3">Nodo-3</option>
-          </select><br><br>
+            
+)foo";
+
+  cadenaTotal +=pag1;
+
+  String pag11 = "";
+
+  //Rellenar la selección de nodo <option value="nodo3">Nodo-3</option>
+  JsonObject obj = listaNodos.as<JsonObject>();
+  for (JsonObject::iterator it=obj.begin(); it!=obj.end(); ++it) 
+    {
+    pag11 += "<option value=\"" + (String)it->key().c_str() + "\">" + (String)it->key().c_str() + "</option>";
+  }
+
+  cadenaTotal += pag11;
+
+
+  String pag12 = R"foo(
+    </select><br><br>
           <input type="submit" value="CONSULTAR">
         </form>
       </div>
@@ -223,15 +240,16 @@ String paginaPrincipal(String idNodoRegistrado)
 
       <div class="desplegable" id="nuevonodo">
         <h2 onclick="enfoca('idnodo')">REGISTRAR NODO</h2>
-)foo";
+  )foo";
+  cadenaTotal += pag12;
 
-  cadenaTotal +=pag1;
 
   //Notificación de nodos registrados
   if(idNodoRegistrado != ""){
     String nodoRegistrado = "<p class=\"notificacion\">Registrado <i>" + idNodoRegistrado + "</i></p>";
     cadenaTotal += nodoRegistrado;
   }
+  Serial.println("Nodo registrado añadido");
 
   String pag2 = R"foo(
         <form action="registranodo" method="POST">
@@ -288,6 +306,6 @@ String paginaPrincipal(String idNodoRegistrado)
 
   cadenaTotal += pag2;
 
-    return cadenaTotal;
+  return cadenaTotal;
 
 }

@@ -1,7 +1,6 @@
 #include "red.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <ArduinoJson.h>
 #include <WiFiClient.h>
 
 
@@ -36,11 +35,15 @@ void conectaWiFi()
     #ifdef DEBUG
         Serial.println("[WiFi]Conectando al punto de acceso " + (String)SSID);  
     #endif
-    while (!WiFi.isConnected())
-    {
-        delay(100);
-        Serial.print("Connecting...");
-    }
+
+    #if CONEXION_OBLIGATORIA
+    Serial.print("Connecting...");
+        while (!WiFi.isConnected())
+        {
+            delay(500);
+            Serial.print(".");
+        }
+    #endif
     
 
 }
@@ -65,10 +68,16 @@ bool compruebaConexion()
     }
 }
 
-void obtenerConfiguracion()
+//Función para obtener una nueva configuración del servidor (llamar a esta función eliminará la configuración del servidor)
+//@return Puntero a la configuracion
+StaticJsonDocument<260>* obtenerConfiguracion()
 {
     //Si todavía no tiene configuración la intenta obtener del servidor
+    #if CONEXION_OBLIGATORIA
+    while(!configuracionAplicada){
+    #else
     if(!configuracionAplicada){
+    #endif
         String contenidoURL = URL_SERVIDOR;
         contenidoURL += "/obtenerconfiguracion";
 
@@ -81,20 +90,20 @@ void obtenerConfiguracion()
             if (respuestaHttp>0) 
             {
                 //Abortamos si no existe la configuración
-                if(respuestaHttp == 204) return;
-                String payload = http.getString();
-                deserializeJson(configuracion, payload);
-                configuracionAplicada = true;
-                #ifdef DEBUG
-                    Serial.print("Respuesta HTTP a recepción de configuracion: ");
-                    Serial.println(respuestaHttp);
-                    Serial.print("Payload: ");
-                    Serial.println(payload);
-                    Serial.print("Configuracion recogida");
-                    String res = "-->";
-                    serializeJson(configuracion, res);
-                    Serial.println(res);
-                #endif
+                if(respuestaHttp == 200)
+                {
+                    String payload = http.getString();
+                    deserializeJson(configuracion, payload);
+                    configuracionAplicada = true;
+                    #ifdef DEBUG
+                        Serial.print("Respuesta HTTP a recepción de configuracion: ");
+                        Serial.println(respuestaHttp);
+                        Serial.print("Configuracion recogida");
+                        String res = "-->";
+                        serializeJson(configuracion, res);
+                        Serial.println(res);
+                    #endif
+                }
 
             }
             else 
@@ -124,20 +133,42 @@ void obtenerConfiguracion()
         configuracion["bomb"] = 5;
         configuracionAplicada = true;
     }
+
+    return &configuracion;
     
+}
+
+//Comprueba si se dispone de una nueva configuración en el servidor
+bool hayConfiguracion()
+{
+    String contenidoURL = URL_SERVIDOR;
+    contenidoURL += "/hayconfiguracion";
+    if(compruebaConexion() && http.begin(wificlient,contenidoURL))
+    {
+        // Enviar petición GET
+        int respuestaHttp = http.GET();
+
+        if (respuestaHttp==200) 
+        {
+            http.end();
+            return true;
+        }
+        else http.end(); return false;
+    }
+    else return false;
 }
 
 void enviaSensores()
 {
     String contenidoURL = URL_SERVIDOR;
     contenidoURL += "/sensor";
-    contenidoURL += "?idnodo=" + configuracion["idNodo"].as<String>();
-    contenidoURL += "?temperaturaht=" + (String)temperaturaHT();
-    contenidoURL += "?humedadht=" + (String)humedadHT();
-    contenidoURL += "?humedadSUST=" + (String)humedadSUST();
-    contenidoURL += "?luminosidad=" + (String)luminosidad();
+    contenidoURL += "?idNodo=" + configuracion["idNodo"].as<String>();
+    contenidoURL += "&temperaturaht=" + (String)temperaturaHT();
+    contenidoURL += "&humedadht=" + (String)humedadHT();
+    contenidoURL += "&humedadSUST=" + (String)humedadSUST();
+    contenidoURL += "&luminosidad=" + (String)luminosidad();
 
-
+    Serial.println(contenidoURL);
     //Si se encuentra conectado al WiFi
     if(compruebaConexion() && http.begin(wificlient,contenidoURL))
     {
@@ -160,5 +191,20 @@ void enviaSensores()
         }
         // Free resources
         http.end();
+    }
+}
+
+StaticJsonDocument<260>* getConfiguracion()
+{
+    return &configuracion;
+}
+
+void compruebaBomba()
+{
+    if(humedadSUST() <= configuracion["sust"].as<float>())
+    {
+        activaRele();
+        delay(configuracion["bomb"].as<int>()*1000);
+        desactivaRele();
     }
 }
