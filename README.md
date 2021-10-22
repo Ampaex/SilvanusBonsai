@@ -1,4 +1,4 @@
-# SilvanusBonsai
+# ![imagen_proyecto](Documentos/Logo.png)
 
 Dispositivo de cuidado autónomo especializado para bonsáis.
 
