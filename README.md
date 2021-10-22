@@ -30,4 +30,4 @@ microcontroladores.
 <img width=290 height=200 src=Imágenes/DSC00469.JPG></img>
 <img width=290 height=200 src=Imágenes/DSC00406.JPG></img>
 <img width=290 height=200 src=Imágenes/Test.png></img>
-<img width=340 height=200 src=Imágenes/web.png></img>
+<img width=740 height=400 src=Imágenes/web.png></img>
